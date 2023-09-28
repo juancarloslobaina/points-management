@@ -1,0 +1,29 @@
+entity Transaction {
+    points Integer
+    date Instant
+    status Status
+}
+
+enum Status {
+    PENDIENTE,
+    APROBADA,
+    RECHAZADA,
+    CANCELADA,
+    COMPLETADA
+}
+
+entity UserPoints{
+    points Integer
+}
+
+relationship OneToOne{
+    UserPoints{user(login)} to User with builtInEntity
+}
+
+relationship ManyToOne {
+    Transaction{userFrom(login) required} to User with builtInEntity
+    Transaction{userTo(login) required} to User with builtInEntity
+}
+
+filter Transaction, UserPoints
+use mapstruct, serviceImpl, pagination for *
