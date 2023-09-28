@@ -1,5 +1,6 @@
 package es.qabit.pm.repository;
 
+import es.qabit.pm.domain.User;
 import es.qabit.pm.domain.UserPoints;
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +38,6 @@ public interface UserPointsRepository extends JpaRepository<UserPoints, Long>, J
 
     @Query("select userPoints from UserPoints userPoints left join fetch userPoints.user where userPoints.id =:id")
     Optional<UserPoints> findOneWithToOneRelationships(@Param("id") Long id);
+
+    Optional<UserPoints> findByUser(User user);
 }

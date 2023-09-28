@@ -1,9 +1,12 @@
 package es.qabit.pm.service;
 
+import es.qabit.pm.config.ApplicationProperties;
 import es.qabit.pm.config.Constants;
 import es.qabit.pm.domain.Authority;
 import es.qabit.pm.domain.User;
+import es.qabit.pm.domain.UserPoints;
 import es.qabit.pm.repository.AuthorityRepository;
+import es.qabit.pm.repository.UserPointsRepository;
 import es.qabit.pm.repository.UserRepository;
 import es.qabit.pm.security.AuthoritiesConstants;
 import es.qabit.pm.security.SecurityUtils;
@@ -44,16 +47,24 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
+    private final UserPointsRepository userPointsRepository;
+
+    private final ApplicationProperties applicationProperties;
+
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        UserPointsRepository userPointsRepository,
+        ApplicationProperties applicationProperties
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.userPointsRepository = userPointsRepository;
+        this.applicationProperties = applicationProperties;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -135,6 +146,12 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
+
+        UserPoints userPoints = new UserPoints();
+        userPoints.setUser(newUser);
+        userPoints.setPoints(applicationProperties.getDefaultAmountPoints());
+        userPointsRepository.save(userPoints);
+        log.debug("Created Information for User Points: {}", userPoints);
         return newUser;
     }
 
@@ -180,6 +197,11 @@ public class UserService {
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
+        UserPoints userPoints = new UserPoints();
+        userPoints.setUser(user);
+        userPoints.setPoints(applicationProperties.getDefaultAmountPoints());
+        userPointsRepository.save(userPoints);
+        log.debug("Created Information for User Points: {}", userPoints);
         return user;
     }
 
@@ -226,6 +248,13 @@ public class UserService {
         userRepository
             .findOneByLogin(login)
             .ifPresent(user -> {
+                userPointsRepository
+                    .findByUser(user)
+                    .ifPresent(up -> {
+                        userPointsRepository.delete(up);
+                        log.debug("Deleted User Points: {}", up);
+                    });
+
                 userRepository.delete(user);
                 this.clearUserCaches(user);
                 log.debug("Deleted User: {}", user);
