@@ -48,6 +48,8 @@ public class CacheConfiguration {
             createCache(cm, es.qabit.pm.domain.User.class.getName());
             createCache(cm, es.qabit.pm.domain.Authority.class.getName());
             createCache(cm, es.qabit.pm.domain.User.class.getName() + ".authorities");
+            createCache(cm, es.qabit.pm.domain.Transaction.class.getName());
+            createCache(cm, es.qabit.pm.domain.UserPoints.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

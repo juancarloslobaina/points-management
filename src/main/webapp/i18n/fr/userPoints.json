@@ -1,0 +1,25 @@
+{
+  "pointsManagementApp": {
+    "userPoints": {
+      "home": {
+        "title": "UserPoints",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau User Points",
+        "createOrEditLabel": "Créer ou éditer un User Points",
+        "notFound": "Aucun User Points trouvé"
+      },
+      "created": "Un nouveau User Points a été créé avec l'identifiant {{ param }}",
+      "updated": "Le User Points avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le User Points avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le User Points {{ id }} ?"
+      },
+      "detail": {
+        "title": "User Points"
+      },
+      "id": "ID",
+      "points": "Points",
+      "user": "User"
+    }
+  }
+}

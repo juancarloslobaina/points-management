@@ -2,6 +2,8 @@ package es.qabit.pm.web.rest.errors;
 
 import static org.springframework.core.annotation.AnnotatedElementUtils.findMergedAnnotation;
 
+import es.qabit.pm.service.exceptions.EmailAlreadyUsedException;
+import es.qabit.pm.service.exceptions.UsernameAlreadyUsedException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Arrays;
@@ -81,13 +83,14 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     }
 
     private ProblemDetailWithCause getProblemDetailWithCause(Throwable ex) {
-        if (ex instanceof es.qabit.pm.service.EmailAlreadyUsedException || ex instanceof es.qabit.pm.service.UsernameAlreadyUsedException) {
+        if (ex instanceof EmailAlreadyUsedException || ex instanceof UsernameAlreadyUsedException) {
             // return 201 - CREATED on purpose to not reveal information to potential attackers
             // see https://github.com/jhipster/generator-jhipster/issues/21731
             return ProblemDetailWithCauseBuilder.instance().withStatus(201).build();
         }
-        if (ex instanceof es.qabit.pm.service.InvalidPasswordException) return (ProblemDetailWithCause) new InvalidPasswordException()
-            .getBody();
+        if (
+            ex instanceof es.qabit.pm.service.exceptions.InvalidPasswordException
+        ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
 
         if (
             ex instanceof ErrorResponseException exp && exp.getBody() instanceof ProblemDetailWithCause problemDetailWithCause
